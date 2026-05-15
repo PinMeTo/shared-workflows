@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Check for risk label
         run: |
-          if ${{ contains(fromJson('["Low risk", "Medium risk", "High risk"]'), github.event.label.name) == true }}
+          if contains(fromJson('["Low risk", "Medium risk", "High risk"]'), github.event.label.name) == true; then
             echo "Risk label found — OK to merge."
           else
             echo "::error::A risk assessment label is required before merging."
