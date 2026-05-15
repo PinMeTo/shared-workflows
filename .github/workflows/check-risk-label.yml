@@ -12,8 +12,16 @@ jobs:
       pull-requests: read
     steps:
       - name: Check for risk label
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
         run: |
-          if contains(fromJson('["Low risk", "Medium risk", "High risk"]'), github.event.label.name) == true; then
+          labels=$(gh api repos/$REPO/issues/$PR_NUMBER/labels --jq '.[].name')
+          echo "Labels on PR: $labels"
+          if echo "$labels" | grep -qxF "Low risk" || \
+             echo "$labels" | grep -qxF "Medium risk" || \
+             echo "$labels" | grep -qxF "High risk"; then
             echo "Risk label found — OK to merge."
           else
             echo "::error::A risk assessment label is required before merging."
