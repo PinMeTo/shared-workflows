@@ -12,10 +12,8 @@ jobs:
       pull-requests: read
     steps:
       - name: Check for risk label
-        env:
-          LABELS: ${{ toJson(github.event.pull_request.labels.*.name) }}
         run: |
-          if echo "$LABELS" | grep -qE '"(Low risk|Medium risk|High risk)"'; then
+          if ${{ contains(fromJson('["Low risk", "Medium risk", "High risk"]'), github.event.label.name) == true }}
             echo "Risk label found — OK to merge."
           else
             echo "::error::A risk assessment label is required before merging."
