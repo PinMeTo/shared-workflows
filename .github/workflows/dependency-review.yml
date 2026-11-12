@@ -14,5 +14,6 @@ jobs:
         uses: actions/dependency-review-action@v4
         with:
           fail-on-severity: high
-          # Every GHSA after the first one is temporary for the yarn to npm migration
-          allow-ghsas: GHSA-jmr7-xgp7-cmfj,GHSA-vfj7-8cjw-p6xm,GHSA-c475-qrg2-pj4r,GHSA-2fw4-mgq9-39cx,GHSA-4rg6-fm25-gc34,GHSA-4w4v-5hc9-xrr2,GHSA-7x27-g8rg-x87w,GHSA-p6mc-m468-83gw,GHSA-7pqw-9j4j-h8q3,GHSA-jmr9-qjv8-65gv,GHSA-73rg-x683-m3qw
+          # GHSA-jmr7-xgp7-cmfj: fast-xml-parser in aws-sdk. GHSA-73rg-x683-m3qw: canvas.
+          # The rest are temporary for the yarn to npm migration (mongoose ones until connectmeto's bumps PR).
+          allow-ghsas: GHSA-jmr7-xgp7-cmfj,GHSA-73rg-x683-m3qw,GHSA-vfj7-8cjw-p6xm,GHSA-c475-qrg2-pj4r,GHSA-2fw4-mgq9-39cx,GHSA-4rg6-fm25-gc34,GHSA-4w4v-5hc9-xrr2,GHSA-7x27-g8rg-x87w,GHSA-pcrw-h46h-c93h,GHSA-wpg9-53fq-2r8h,GHSA-gg4r-jv3p-qx3c,GHSA-8332-j7wj-wjw4
