@@ -3,6 +3,7 @@ name: Require risk assessment label
 on:
   pull_request:
     types: [opened, reopened, labeled, unlabeled, synchronize]
+  workflow_call:
 
 jobs:
   check-risk-label:
