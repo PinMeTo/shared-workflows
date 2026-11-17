@@ -55,6 +55,8 @@ jobs:
 
           top_heading="$(grep -m1 -E '^## ' "$changelog" || true)"
           base_top_heading="$(git show "origin/${BASE_REF}:${changelog}" 2>/dev/null | grep -m1 -E '^## ' || true)"
+          top_section="$(awk '/^## /{n++} n==1' "$changelog")"
+          base_top_section="$(git show "origin/${BASE_REF}:${changelog}" 2>/dev/null | awk '/^## /{n++} n==1' || true)"
           package_version="$(jq -r .version "$package_json")"
           base_version="$(git show "origin/${BASE_REF}:${package_json}" 2>/dev/null | jq -r .version || true)"
 
@@ -66,8 +68,8 @@ jobs:
               echo "::error file=${package_json}::This repo requires a version bump on every PR. Bump $package_json above $base_version and add a matching section at the top of $changelog."
               exit 1
             fi
-            if [ -n "$base_top_heading" ] && [ "$top_heading" != "$base_top_heading" ]; then
-              echo "::error file=${changelog}::The top section of $changelog changed but $package_json is still $package_version. Bump the version, or keep new notes out of the top section."
+            if [ -n "$base_top_section" ] && [ "$top_section" != "$base_top_section" ]; then
+              echo "::error file=${changelog}::The top section of $changelog changed but $package_json is still $package_version. The top section documents a released version. Bump the version and add the notes in a new section at the top."
               exit 1
             fi
             echo "OK: version unchanged, top section unchanged."
