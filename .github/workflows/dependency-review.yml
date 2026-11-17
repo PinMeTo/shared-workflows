@@ -4,16 +4,33 @@ on: [pull_request]
 permissions:
   contents: read
 
+# Each repo keeps its own exceptions in .github/dependency-review-config.yml
+# (allow-ghsas, with a comment on why and when to remove each one).
+# Inline inputs override the config file, so the severity threshold, the scope and the
+# vulnerability check itself stay fixed here.
+
 jobs:
   dependency-review:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+
       - name: Dependency Review
+        if: hashFiles('.github/dependency-review-config.yml') != ''
+        uses: actions/dependency-review-action@v4
+        with:
+          config-file: ./.github/dependency-review-config.yml
+          fail-on-severity: high
+          fail-on-scopes: runtime
+          vulnerability-check: true
+          warn-only: false
+
+      # Transitional: repos without a config file keep the old shared list
+      # until they have their own. Remove this step and the list once they do.
+      - name: Dependency Review (shared exceptions)
+        if: hashFiles('.github/dependency-review-config.yml') == ''
         uses: actions/dependency-review-action@v4
         with:
           fail-on-severity: high
-          # GHSA-jmr7-xgp7-cmfj: fast-xml-parser in aws-sdk. GHSA-73rg-x683-m3qw: canvas.
-          # The rest are temporary for the yarn to npm migration (mongoose ones until connectmeto's bumps PR).
           allow-ghsas: GHSA-jmr7-xgp7-cmfj,GHSA-73rg-x683-m3qw,GHSA-vfj7-8cjw-p6xm,GHSA-c475-qrg2-pj4r,GHSA-2fw4-mgq9-39cx,GHSA-4rg6-fm25-gc34,GHSA-4w4v-5hc9-xrr2,GHSA-7x27-g8rg-x87w,GHSA-89mq-4x47-5v83,GHSA-qr28-fpjm-wq7f,GHSA-pcrw-h46h-c93h,GHSA-wpg9-53fq-2r8h,GHSA-gg4r-jv3p-qx3c,GHSA-8332-j7wj-wjw4
